@@ -162,9 +162,9 @@ fi
 
 mkdir -p logs
 
-if [ -f "logs/kubeflow-spn.json" ]; then
+if [ -f "logs/spn.json" ]; then
     echo "Loading Service Principal from file..."
-	spnResult=$(cat logs/kubeflow-spn.json)
+	spnResult=$(cat logs/spn.json)
 else
 	echo "Creating Service Principal..."
 	spnResult=$(az ad sp create-for-rbac -n "$servicePrincipalName" --scope "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName" --skip-assignment)
@@ -173,7 +173,7 @@ else
 		echo "Creating the Service Principal failed. Aborting..."
 		exit 1
 	fi
-	echo $spnResult | tee logs/kubeflow-spn.json
+	echo $spnResult | tee logs/spn.json
 	sleep 30
 fi
 servicePrincipalClientId=$(echo $spnResult | jq -r .appId)

@@ -87,11 +87,11 @@ fi
 echo "Removing resource group..."
 az group delete -g "$resourceGroupName" --yes
 
-if [ -f "logs/kubeflow-spn.json" ]; then
+if [ -f "logs/spn.json" ]; then
 	echo "Removing Service Principal..."
 	servicePrincipalObjectId=$(az ad sp list --filter "displayName eq '$servicePrincipalName'" --query "[].{objectId:objectId}" -o tsv)
 	az ad sp delete --id "$servicePrincipalObjectId"
-	rm -rf logs/kubeflow-spn.json
+	rm -rf logs/spn.json
 fi
 
 echo "Removing kubectl config..."
