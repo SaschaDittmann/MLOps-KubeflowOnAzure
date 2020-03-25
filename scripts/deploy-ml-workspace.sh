@@ -10,12 +10,12 @@ usage() { echo "Usage: $0 -s <subscriptionId> -g <resourceGroupName> -w <workspa
 
 declare subscriptionId="d2494347-ee90-4f61-8203-dcebbdb6678a"
 declare resourceGroupName="kubeflow"
-declare workspaceName="kubeflow-mlwrksp"
 declare containerRegistryName=""
-
 if [ -f "logs/acr.json" ]; then
-    containerRegistryName=$(jq -r '.name' logs/acr.json)
+	resourceGroupName=$(jq -r '.resourceGroup' logs/acr.json)
+	containerRegistryName=$(jq -r '.name' logs/acr.json)
 fi
+declare workspaceName="kubeflow-mlwrksp"
 
 # Initialize parameters specified from command line
 while getopts ":s:g:w:r:h" arg; do
