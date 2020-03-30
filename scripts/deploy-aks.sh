@@ -202,7 +202,7 @@ else
 		echo "Creating the Virtual Network failed. Aborting..."
 		exit 1
 	fi
-	echo $subnetDefaultResult | tee logs/vnet-subnet-default.json
+	echo $subnetDefaultResult | tee logs/vnet-subnet-default.json > /dev/null
 fi
 subnetDefaultId=$(jq -r '.newVNet.subnets[0].id' logs/vnet-subnet-default.json)
 
