@@ -258,7 +258,7 @@ else
 		echo "Deploying the Azure Kubernetes Service failed. Aborting..."
 		exit 1
 	fi
-	echo $aksResult | tee logs/aks.json
+	echo $aksResult | tee logs/aks.json > /dev/null
 fi
 
 if [ -f "logs/aks-enable-virtual-nodes.json" ]; then
@@ -288,7 +288,7 @@ else
 		echo "Creating the Azure Container Registry failed. Aborting..."
 		exit 1
 	fi
-	echo $acrResult | tee logs/acr.json
+	echo $acrResult | tee logs/acr.json > /dev/null
 fi
 
 if [ -f "logs/aks-attach-acr.json" ]; then
