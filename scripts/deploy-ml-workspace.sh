@@ -112,7 +112,7 @@ else
 		echo "Creating the Azure Machine Learning workspace failed. Aborting..."
 		exit 1
 	fi
-	echo $amlResult | tee logs/aml-workspace.json
+	echo $amlResult | tee logs/aml-workspace.json > /dev/null
 fi
 
 echo "Azure Machine Learning has been successfully deployed"

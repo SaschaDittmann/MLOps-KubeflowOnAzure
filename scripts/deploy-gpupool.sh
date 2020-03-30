@@ -143,7 +143,7 @@ if [[ -z "$existingNodePool" ]]; then
 	if [ $?  == 0 ]; then
 		echo "AKS Node Pool has been successfully deployed"
 	fi
-	echo $nodePoolResult | tee "logs/aks-$nodepoolName.json"
+	echo $nodePoolResult | tee "logs/aks-$nodepoolName.json" > /dev/null
 else
 	echo "Node Pool $nodepoolName does already exist."
 fi

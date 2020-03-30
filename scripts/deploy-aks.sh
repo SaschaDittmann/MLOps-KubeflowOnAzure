@@ -173,7 +173,7 @@ else
 		echo "Creating the Service Principal failed. Aborting..."
 		exit 1
 	fi
-	echo $spnResult | tee logs/kubeflow-spn.json
+	echo $spnResult | tee logs/kubeflow-spn.json > /dev/null
 	sleep 30
 fi
 servicePrincipalClientId=$(echo $spnResult | jq -r .appId)
@@ -188,7 +188,7 @@ else
 		echo "Assigning the Contributor to the Service Principal failed. Aborting..."
 		exit 1
 	fi
-	echo $roleAssignmentResult | tee logs/spn-role-assignment.json
+	echo $roleAssignmentResult | tee logs/spn-role-assignment.json > /dev/null
 fi
 
 if [ -f "logs/vnet-subnet-default.json" ]; then
@@ -217,7 +217,7 @@ else
 		echo "Adding a Subnet to the Virtual Network failed. Aborting..."
 		exit 1
 	fi
-	echo $subnetVirtualNodesResult | tee logs/vnet-subnet-vnodes.json
+	echo $subnetVirtualNodesResult | tee logs/vnet-subnet-vnodes.json > /dev/null
 fi
 
 if [ -f "logs/aks.json" ]; then
@@ -272,7 +272,7 @@ else
 		echo "Enabling the Virtual Nodes failed. Aborting..."
 		exit 1
 	fi
-	echo $enableVirtualNodesResults | tee logs/aks-enable-virtual-nodes.json
+	echo $enableVirtualNodesResults | tee logs/aks-enable-virtual-nodes.json > /dev/null
 fi
 
 if [ -f "logs/acr.json" ]; then
@@ -302,7 +302,7 @@ else
 		echo "Attaching the Azure Container Registry failed. Aborting..."
 		exit 1
 	fi
-	echo $aksAttachAcrResult | tee logs/aks-attach-acr.json
+	echo $aksAttachAcrResult | tee logs/aks-attach-acr.json > /dev/null
 fi
 
 echo "Configuring kubectl..."
@@ -330,7 +330,7 @@ else
 			echo "Enable monitoring of Azure Kubernetes Service (AKS) failed. Aborting..."
 			exit 1
 		fi
-		echo $aksEnableMonitoringResult | tee logs/aks-enable-monitoring.json
+		echo $aksEnableMonitoringResult | tee logs/aks-enable-monitoring.json > /dev/null
 	fi
 fi
 
