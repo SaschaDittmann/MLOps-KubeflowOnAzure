@@ -19,6 +19,11 @@ if [ -f "logs/aks.json" ]; then
 	aksClusterName=$(jq -r '.name' logs/aks.json)
 fi
 
+if [ -f "logs/spn.json" ]; then
+	echo "Loading Service Principal from file..."
+	servicePrincipalName=$(jq -r '.displayName' logs/spn.json)
+fi
+
 # Initialize parameters specified from command line
 while getopts ":s:g:k:" arg; do
 	case "${arg}" in
