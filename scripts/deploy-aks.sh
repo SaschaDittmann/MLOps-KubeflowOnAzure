@@ -14,7 +14,7 @@ declare resourceGroupName="kubeflow"
 declare resourceGroupLocation="westeurope"
 declare aksClusterName="kubeflow-aks"
 declare containerRegistryName="kubeflowacr$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
-declare kubernetesVersion="1.15.10"
+declare kubernetesVersion="1.16.13"
 declare dnsPrefix="kubeflow-youtube"
 declare vnetName="kubeflow-vnet"
 declare servicePrincipalName="http://kubeflow-spn"
@@ -320,7 +320,7 @@ if [ -f "logs/aks-enable-monitoring.json" ]; then
 else
 	echo "Enabling monitoring of Azure Kubernetes Service (AKS)..."
 	#az resource list --resource-type Microsoft.OperationalInsights/workspaces -o json
-	workspaceId=$(az resource list --resource-type Microsoft.OperationalInsights/workspaces -o tsv | grep "$resourceGroupLocation" | awk '{print $1}')
+	workspaceId=$(az resource list --resource-type Microsoft.OperationalInsights/workspaces -o tsv  --query "[?location=='$resourceGroupLocation'].id")
 	if [[ -z "$workspaceId" ]]; then
 		echo "No Monitoring Workspace found. Skipping..."
 	else
