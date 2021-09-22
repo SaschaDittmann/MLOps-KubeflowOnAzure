@@ -13,8 +13,8 @@ declare subscriptionId=""
 declare resourceGroupName="kubeflow"
 declare resourceGroupLocation="westeurope"
 declare aksClusterName="kubeflow-aks"
-declare containerRegistryName="kubeflowacr$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
-declare kubernetesVersion="1.16.13"
+declare containerRegistryName="kubeflowacr$(head -c32 < /dev/urandom | base64 | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
+declare kubernetesVersion="1.17.13"
 declare dnsPrefix="kubeflow-youtube"
 declare vnetName="kubeflow-vnet"
 declare servicePrincipalName="http://kubeflow-spn"
@@ -206,19 +206,19 @@ else
 fi
 subnetDefaultId=$(jq -r '.newVNet.subnets[0].id' logs/vnet-subnet-default.json)
 
-if [ -f "logs/vnet-subnet-vnodes.json" ]; then
-    echo "Loading Virtual Node Subnet from file..."
-	subnetVirtualNodesResult=$(cat logs/vnet-subnet-vnodes.json)
-else
-	subnetVirtualNodesResult=$(az network vnet subnet create -g "$resourceGroupName" --vnet-name "$vnetName" \
-		-n "virtual-node-aci" --address-prefixes 10.241.0.0/16 \
-		--delegations "Microsoft.ContainerInstance/containerGroups")
-	if [ $? != 0 ]; then
-		echo "Adding a Subnet to the Virtual Network failed. Aborting..."
-		exit 1
-	fi
-	echo $subnetVirtualNodesResult | tee logs/vnet-subnet-vnodes.json > /dev/null
-fi
+#if [ -f "logs/vnet-subnet-vnodes.json" ]; then
+#    echo "Loading Virtual Node Subnet from file..."
+#	subnetVirtualNodesResult=$(cat logs/vnet-subnet-vnodes.json)
+#else
+#	subnetVirtualNodesResult=$(az network vnet subnet create -g "$resourceGroupName" --vnet-name "$vnetName" \
+#		-n "virtual-node-aci" --address-prefixes 10.241.0.0/16 \
+#		--delegations "Microsoft.ContainerInstance/containerGroups")
+#	if [ $? != 0 ]; then
+#		echo "Adding a Subnet to the Virtual Network failed. Aborting..."
+#		exit 1
+#	fi
+#	echo $subnetVirtualNodesResult | tee logs/vnet-subnet-vnodes.json > /dev/null
+#fi
 
 if [ -f "logs/aks.json" ]; then
     echo "Loading Azure Kubernetes Service from file..."
@@ -237,7 +237,7 @@ else
 			-s "$vmSize" -c 3 -k "$kubernetesVersion" \
 			--service-principal "$servicePrincipalClientId" --client-secret "$servicePrincipalClientSecret" \
 			--enable-cluster-autoscaler --min-count 1 --max-count 10 \
-			--network-plugin "azure" --network-policy "calico" \
+			--network-plugin "azure" \
 			--vm-set-type "VirtualMachineScaleSets" --load-balancer-sku "standard" \
 			--dns-service-ip "10.0.0.10" --docker-bridge-address "172.17.0.1/16" \
 			--nodepool-name "$nodepoolName" --vnet-subnet-id "$subnetDefaultId" \
@@ -247,7 +247,7 @@ else
 			-s "$vmSize" -c 3 -k "$kubernetesVersion" -p "$dnsPrefix" \
 			--service-principal "$servicePrincipalClientId" --client-secret "$servicePrincipalClientSecret" \
 			--enable-cluster-autoscaler --min-count 1 --max-count 10 \
-			--network-plugin "azure" --network-policy "calico" \
+			--network-plugin "azure" \
 			--vm-set-type "VirtualMachineScaleSets" --load-balancer-sku "standard" \
 			--dns-service-ip "10.0.0.10" --docker-bridge-address "172.17.0.1/16" \
 			--nodepool-name "$nodepoolName" --vnet-subnet-id "$subnetDefaultId" \
@@ -260,20 +260,21 @@ else
 	fi
 	echo $aksResult | tee logs/aks.json > /dev/null
 fi
+# --network-policy "calico"
 
-if [ -f "logs/aks-enable-virtual-nodes.json" ]; then
-    echo "Loading AKS Virtual Nodes from file..."
-	enableVirtualNodesResults=$(cat logs/aks-enable-virtual-nodes.json)
-else
-	enableVirtualNodesResults=$(az aks enable-addons -g "$resourceGroupName" -n "$aksClusterName" \
-		--addons virtual-node --subnet-name "virtual-node-aci")
-	if [ $? != 0 ];
-	then
-		echo "Enabling the Virtual Nodes failed. Aborting..."
-		exit 1
-	fi
-	echo $enableVirtualNodesResults | tee logs/aks-enable-virtual-nodes.json > /dev/null
-fi
+#if [ -f "logs/aks-enable-virtual-nodes.json" ]; then
+#    echo "Loading AKS Virtual Nodes from file..."
+#	enableVirtualNodesResults=$(cat logs/aks-enable-virtual-nodes.json)
+#else
+#	enableVirtualNodesResults=$(az aks enable-addons -g "$resourceGroupName" -n "$aksClusterName" \
+#		--addons virtual-node --subnet-name "virtual-node-aci")
+#	if [ $? != 0 ];
+#	then
+#		echo "Enabling the Virtual Nodes failed. Aborting..."
+#		exit 1
+#	fi
+#	echo $enableVirtualNodesResults | tee logs/aks-enable-virtual-nodes.json > /dev/null
+#fi
 
 if [ -f "logs/acr.json" ]; then
     echo "Loading Azure Container Registry from file..."

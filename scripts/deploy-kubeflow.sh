@@ -17,6 +17,8 @@ else
   rm kfctl.tar.gz
 fi
 
+mkdir -p logs
+
 export PATH=$PATH:$(pwd)
 
 # Set KF_NAME to the name of your Kubeflow deployment. This also becomes the
@@ -31,7 +33,7 @@ export BASE_DIR="$(pwd)/logs/kubeflow"
 export KF_DIR=${BASE_DIR}/${KF_NAME}
 
 # Set the configuration file to use, such as the file specified below:
-export CONFIG_URI="https://raw.githubusercontent.com/kubeflow/manifests/v1.0-branch/kfdef/kfctl_k8s_istio.v1.0.0.yaml"
+export CONFIG_URI="https://raw.githubusercontent.com/kubeflow/manifests/v1.2-branch/kfdef/kfctl_k8s_istio.v1.2.0.yaml"
 
 echo "Creating Kubeflow folders..."
 # Generate and deploy Kubeflow:
